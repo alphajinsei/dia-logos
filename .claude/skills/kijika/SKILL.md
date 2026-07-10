@@ -8,6 +8,17 @@ description: この対話を dia-logos ブログの記事mdに変換する。ユ
 この会話を、ブログ記事の Markdown に変換して `src/content/posts/` に書き出す。
 ルールはここに固定されている。ユーザーは毎回内容を指示しなくてよい。
 
+## 元ネタの2つの経路（棚卸しの優先順位）
+
+記事の素材＝過去の対話は保存場所が2つに分かれている。詳細は CLAUDE.md 参照。
+
+- **claude.ai（Webのチャット）**＝ユーザーの思想が主にここにある。**棚卸しはこちらを優先**。
+  `conversations.json` を Export → `node scripts/split-export.mjs` で分割 → 一覧から選んで記事化。
+- **Claude Code のローカル履歴**（`~/.claude/projects/**.jsonl`、このセッション含む）＝実務指示が多い。
+  **後追い**で良い会話だけ拾う。Claude がその場で読めるので Export 不要。
+
+いずれの経路でも、変換ルール（下記）は同一。
+
 ## 出力先とファイル名
 
 - 保存先: `src/content/posts/`

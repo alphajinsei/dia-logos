@@ -1,0 +1,148 @@
+:root {
+  --bg: #faf9f7;
+  --fg: #1f1d1a;
+  --muted: #6b6660;
+  --line: #e5e1db;
+  --accent: #7a5c3e;
+  --summary-bg: #f2ede5;
+  --user-bg: #eef3f6;
+  --assistant-bg: #ffffff;
+  --max: 720px;
+  --font: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo,
+    system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  line-height: 1.8;
+  font-size: 17px;
+}
+
+a { color: var(--accent); }
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ---- header / footer ---- */
+.site-header {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 40px;
+}
+.site-header .wrap {
+  padding-top: 28px;
+  padding-bottom: 22px;
+}
+.site-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--fg);
+}
+.site-tagline {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.site-footer {
+  border-top: 1px solid var(--line);
+  margin-top: 64px;
+  padding: 28px 0 48px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ---- index list ---- */
+.post-list { list-style: none; padding: 0; margin: 0; }
+.post-item { padding: 22px 0; border-bottom: 1px solid var(--line); }
+.post-item time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.post-item h2 { margin: 4px 0 6px; font-size: 20px; }
+.post-item h2 a { text-decoration: none; color: var(--fg); }
+.post-item h2 a:hover { color: var(--accent); }
+.post-item p { margin: 0; color: var(--muted); font-size: 15px; }
+.tags { margin-top: 8px; }
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--summary-bg);
+  border-radius: 4px;
+  padding: 1px 8px;
+  margin-right: 6px;
+  text-decoration: none;
+}
+
+/* ---- article ---- */
+.post-header { margin-bottom: 8px; }
+.post-header time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.post-header h1 { margin: 6px 0 0; font-size: 28px; line-height: 1.4; }
+
+/* サマリー＝結論の要約。本文（軌跡）への入口として上部に据える。 */
+.summary {
+  background: var(--summary-bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 24px 0 8px;
+}
+.summary .summary-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.summary p { margin: 0; }
+
+.trajectory-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 700;
+  margin: 40px 0 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+
+/* 対話の発言ブロック（Markdown内の見出しベースで装飾する場合の受け皿） */
+.post-body :where(h2) {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 32px 0 4px;
+  font-weight: 700;
+}
+.post-body :where(blockquote) {
+  border-left: 3px solid var(--line);
+  margin: 12px 0;
+  padding: 2px 16px;
+  color: var(--muted);
+}
+.post-body :where(pre) {
+  background: #2b2825;
+  color: #f5f2ec;
+  padding: 14px 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.post-body :where(code):not(pre code) {
+  background: var(--summary-bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.post-body :where(img) { max-width: 100%; height: auto; }
+.post-body :where(table) { border-collapse: collapse; width: 100%; font-size: 15px; }
+.post-body :where(th, td) { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
+
+.back-link { display: inline-block; margin-top: 40px; font-size: 14px; }

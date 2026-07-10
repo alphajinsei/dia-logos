@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const posts = (await getCollection('posts', ({ data }) => import.meta.env.PROD ? !data.draft : true))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const fmt = (d: Date) =>
+  new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+---
+
+<Base description="AIとの対話から選び取った思考の軌跡を、そのまま公開しています。">
+  {posts.length === 0 && (
+    <p style="color:var(--muted)">まだ記事がありません。最初の対話を <code>/記事化</code> で書き出してください。</p>
+  )}
+  <ul class="post-list">
+    {posts.map((post) => (
+      <li class="post-item">
+        <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+        <h2><a href={`/posts/${post.slug}/`}>{post.data.title}</a></h2>
+        <p>{post.data.summary}</p>
+        {post.data.tags.length > 0 && (
+          <div class="tags">
+            {post.data.tags.map((t) => <a class="tag" href={`/tags/${t}/`}>#{t}</a>)}
+          </div>
+        )}
+      </li>
+    ))}
+  </ul>
+</Base>

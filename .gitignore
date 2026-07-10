@@ -1,0 +1,17 @@
+# build output
+dist/
+# dependencies
+node_modules/
+# generated types
+.astro/
+# environment
+.env
+.env.production
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# 過去ログのエクスポート（生データ＝個人情報を含むので公開リポに入れない）
+conversations.json
+export/
+*.export.zip

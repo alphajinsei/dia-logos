@@ -15,3 +15,6 @@ Thumbs.db
 conversations.json
 export/
 *.export.zip
+
+# スクリーンショット（作業用・不要）
+screenshot/

@@ -12,6 +12,9 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.7",
     "astro": "^4.16.0",
-    "marked": "^18.0.6"
+    "katex": "^0.17.0",
+    "marked": "^18.0.6",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
   }
 }

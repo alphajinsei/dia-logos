@@ -1,34 +1,20 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
+    "defaultMode": "acceptEdits",
     "allow": [
       "Read",
       "Edit",
       "Write",
       "Glob",
       "Grep",
-      "Bash(git *)",
-      "Bash(npm *)",
-      "Bash(npx *)",
-      "Bash(node *)",
-      "Bash(curl *)",
-      "Bash(ls *)",
-      "Bash(cd *)",
-      "Bash(find *)",
-      "Bash(grep *)",
-      "Bash(head *)",
-      "Bash(tail *)",
-      "Bash(cat *)",
-      "Bash(echo *)",
-      "Bash(mkdir *)",
-      "Bash(sleep *)",
-      "Bash(du *)",
-      "Bash(pkill *)"
+      "Bash"
     ],
     "deny": [
       "Bash(rm -rf *)",
       "Bash(git push --force*)",
-      "Bash(git reset --hard*)"
+      "Bash(git reset --hard*)",
+      "Bash(git push -f*)"
     ]
   }
 }

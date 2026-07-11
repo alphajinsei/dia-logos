@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+// 数式（KaTeX）の描画用。CDN ではなくバンドルするので外部依存にならない。
+import 'katex/dist/katex.min.css';
 
 interface Props {
   title?: string;

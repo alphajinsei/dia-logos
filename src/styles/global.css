@@ -141,6 +141,20 @@ a { color: var(--accent); }
   border-radius: 4px;
   font-size: 0.9em;
 }
+.notes-body :where(table) {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+  margin: 0 0 0.8em;
+  display: block;
+  overflow-x: auto;
+}
+.notes-body :where(th, td) {
+  border: 1px solid var(--line);
+  padding: 5px 9px;
+  text-align: left;
+}
+.notes-body :where(th) { background: var(--summary-bg); }
 .notes-body > :first-child { margin-top: 0; }
 .notes-body > :last-child { margin-bottom: 0; }
 

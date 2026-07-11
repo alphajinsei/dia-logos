@@ -1,3 +1,8 @@
+/* デザイン原則（触る前に読む）
+   1. 色相は茶〜オレンジ系で統一する。他の色相（青など）を差し込まない。
+      → Claude との対話が主題のサイトなので、Claude 系の配色に合わせている。
+   2. 視覚的な重さは上から下へ軽くする。サマリー（上位・結論）が最も濃く、
+      問い（本文中）はそれより薄く・線も細く。下が重くなると流れが不自然になる。 */
 :root {
   --bg: #faf9f7;
   --fg: #1f1d1a;
@@ -5,7 +10,10 @@
   --line: #e5e1db;
   --accent: #7a5c3e;
   --summary-bg: #f2ede5;
-  --user-bg: #eef3f6;
+  /* 問い＝ユーザーの発言。サマリーより軽く（薄い背景・細い線）。
+     薄さで失う視認性は左線の濃さで補う。 */
+  --user-bg: #f7f3ec;
+  --user-border: #7a5c3e;
   --assistant-bg: #ffffff;
   --max: 720px;
   --font: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo,
@@ -120,13 +128,18 @@ a { color: var(--accent); }
   margin: 32px 0 4px;
   font-weight: 700;
 }
-/* 問い＝ユーザーの発言。このブログの主役なので沈めない。本文色＋アクセント線で立たせる。 */
+/* 問い＝ユーザーの発言。このブログの主役なので沈めない。
+   背景色付きブロックで「問いである」ことを一目で示しつつ、文字は本文と同じ濃さを保つ。 */
 .post-body :where(blockquote) {
-  border-left: 3px solid var(--accent);
-  margin: 16px 0;
-  padding: 4px 18px;
+  background: var(--user-bg);
+  border-left: 2px solid var(--user-border);
+  border-radius: 6px;
+  margin: 20px 0;
+  padding: 14px 18px;
   color: var(--fg);
 }
+.post-body :where(blockquote) :where(p):first-child { margin-top: 0; }
+.post-body :where(blockquote) :where(p):last-child { margin-bottom: 0; }
 .post-body :where(pre) {
   background: #2b2825;
   color: #f5f2ec;

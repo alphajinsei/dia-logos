@@ -120,11 +120,12 @@ a { color: var(--accent); }
   margin: 32px 0 4px;
   font-weight: 700;
 }
+/* 問い＝ユーザーの発言。このブログの主役なので沈めない。本文色＋アクセント線で立たせる。 */
 .post-body :where(blockquote) {
-  border-left: 3px solid var(--line);
-  margin: 12px 0;
-  padding: 2px 16px;
-  color: var(--muted);
+  border-left: 3px solid var(--accent);
+  margin: 16px 0;
+  padding: 4px 18px;
+  color: var(--fg);
 }
 .post-body :where(pre) {
   background: #2b2825;

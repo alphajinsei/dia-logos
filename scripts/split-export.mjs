@@ -38,15 +38,21 @@ const slug = (s) =>
     .replace(/\s+/g, '-')
     .slice(0, 60);
 
-// メッセージ本文の取り出し（形式差を吸収）
+// メッセージ本文の取り出し。
+//
+// 重要: `content` を優先する。`text` には Claude の英語内部思考が応答本文と連結されて
+// 入っており汚染されている。`content` はユーザーに実際に返した応答だけを持つクリーンな側。
+// content が空のときだけ text にフォールバックするが、それはエクスポート欠落の兆候なので
+// 呼び出し側で警告する。
 function textOf(msg) {
-  if (typeof msg.text === 'string') return msg.text;
-  if (typeof msg.content === 'string') return msg.content;
+  if (typeof msg.content === 'string' && msg.content.trim()) return msg.content.trim();
   if (Array.isArray(msg.content)) {
-    return msg.content
+    const joined = msg.content
       .map((c) => (typeof c === 'string' ? c : c.text || ''))
       .filter(Boolean)
-      .join('\n');
+      .join('\n')
+      .trim();
+    if (joined) return joined;
   }
   return '';
 }
@@ -59,6 +65,7 @@ function roleOf(msg) {
 }
 
 let count = 0;
+const gaps = []; // 本文が空のメッセージ＝エクスポートの欠落候補
 for (const c of convos) {
   const title = c.name || c.title || 'untitled';
   const created = (c.created_at || c.create_time || '').toString().slice(0, 10);
@@ -66,8 +73,11 @@ for (const c of convos) {
   if (!msgs.length) continue;
 
   const body = msgs
-    .map((m) => {
-      const t = textOf(m).trim();
+    .map((m, i) => {
+      const t = textOf(m);
+      // 空のメッセージは、エクスポートが本文を落としている可能性がある。
+      // 黙って捨てると記事から議論が丸ごと欠ける（実際に起きた）ので記録して報告する。
+      if (!t) gaps.push(`${title} — ${i + 1}番目 (${roleOf(m)})`);
       return t ? `### ${roleOf(m)}\n\n${t}` : '';
     })
     .filter(Boolean)
@@ -80,4 +90,12 @@ for (const c of convos) {
 }
 
 console.log(`✓ ${count} 件の会話を ${OUT}/ に書き出しました。`);
-console.log('  次: 中身を眺め、記事化したい会話を選んで Claude に「これを記事化して」と渡してください。');
+
+if (gaps.length) {
+  console.log(`\n⚠ 本文が空のメッセージが ${gaps.length} 件あります（エクスポートの欠落の可能性）:`);
+  for (const g of gaps.slice(0, 20)) console.log(`   - ${g}`);
+  if (gaps.length > 20) console.log(`   ...他 ${gaps.length - 20} 件`);
+  console.log('   → 該当会話を記事化するときは、元のチャット画面から本文を貼り直す必要があります。');
+}
+
+console.log('\n  次: 中身を眺め、記事化したい会話を選んで Claude に「これを記事化して」と渡してください。');

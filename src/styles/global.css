@@ -109,7 +109,9 @@ a { color: var(--accent); }
   font-weight: 700;
   margin: 0 0 6px;
 }
-.summary p { margin: 0; }
+/* 長い対話の要約は複数段落になる。段落間に余白を入れて読めるようにする。 */
+.summary p { margin: 0 0 0.9em; }
+.summary p:last-child { margin-bottom: 0; }
 
 .trajectory-label {
   font-size: 12px;

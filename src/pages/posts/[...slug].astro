@@ -26,10 +26,17 @@ const fmt = (d: Date) =>
       )}
     </div>
 
-    {/* サマリー＝結論。これ単体で読めて、同時に下の軌跡への目次になる。 */}
+    {/* サマリー＝結論。これ単体で読めて、同時に下の軌跡への目次になる。
+        長い対話ほど要約も長くなるので段落に分けて描画する。
+        front matter の `>-`（折り畳みスカラ）は、YAML上の空行を単一の \n に畳むので、
+        \n\n ではなく \n で分割する。 */}
     <section class="summary">
       <p class="summary-label">要約</p>
-      <p>{post.data.summary}</p>
+      {post.data.summary
+        .split('\n')
+        .map((para) => para.trim())
+        .filter(Boolean)
+        .map((para) => <p>{para}</p>)}
     </section>
 
     <p class="trajectory-label">軌跡（対話そのまま）</p>

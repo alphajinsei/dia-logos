@@ -113,6 +113,37 @@ a { color: var(--accent); }
 .summary p { margin: 0 0 0.9em; }
 .summary p:last-child { margin-bottom: 0; }
 
+/* 要点＝内容の結晶。サマリー(索引)と軌跡(過程)の中間の層。
+   重さもその中間：サマリーより軽く、本文より存在感を持たせる。枠線で囲って別物と分かるようにする。 */
+.notes {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 32px 0 8px;
+}
+.notes-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+.notes-body :where(p) { margin: 0 0 0.8em; }
+.notes-body :where(p):last-child { margin-bottom: 0; }
+.notes-body :where(ul, ol) { margin: 0 0 0.8em; padding-left: 1.3em; }
+.notes-body :where(li) { margin: 0.25em 0; }
+.notes-body :where(li) :where(ul, ol) { margin: 0.25em 0; }
+.notes-body :where(strong) { color: var(--accent); }
+.notes-body :where(h2, h3, h4) { font-size: 15px; margin: 1em 0 0.4em; }
+.notes-body :where(code) {
+  background: var(--summary-bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.notes-body > :first-child { margin-top: 0; }
+.notes-body > :last-child { margin-bottom: 0; }
+
 .trajectory-label {
   font-size: 12px;
   letter-spacing: 0.08em;

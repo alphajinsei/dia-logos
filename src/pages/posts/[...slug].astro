@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { marked } from 'marked';
 import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
@@ -9,6 +10,9 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+
+// 要点は markdown で書けるようにする（箇条書き・強調が要るため）
+const notesHtml = post.data.notes ? marked.parse(post.data.notes) : null;
 
 const fmt = (d: Date) =>
   new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
@@ -38,6 +42,15 @@ const fmt = (d: Date) =>
         .filter(Boolean)
         .map((para) => <p>{para}</p>)}
     </section>
+
+    {/* 要点＝内容の結晶。サマリー(索引)と軌跡(過程)の中間。
+        「何が分かったか」を構造として持ち帰れるようにする層。 */}
+    {notesHtml && (
+      <section class="notes">
+        <p class="notes-label">要点</p>
+        <div class="notes-body" set:html={notesHtml} />
+      </section>
+    )}
 
     <p class="trajectory-label">軌跡（対話そのまま）</p>
     <div class="post-body">

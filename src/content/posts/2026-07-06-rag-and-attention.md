@@ -1,5 +1,5 @@
 ---
-title: RAG を見て attention を思い出した — 同じ骨格が、硬さを変えて二段に積まれている
+title: RAG は上位を選び、attention は全部を混ぜる — 同じ検索の、硬い版と柔らかい版
 date: 2026-07-06
 summary: >-
   RAG はベクトル DB に内積のクエリをかけて一致度の高い情報を拾う技術だと聞いて、attention の仕組みを

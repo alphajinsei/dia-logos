@@ -1,53 +1,87 @@
 # dia-logos — AIとの対話から選び取った思考の軌跡を公開するブログ
 
+**https://dia-logos.alphajinsei.com** （完全公開・認証なし）
+
 AIが普遍的知識をならした後に希少なのは「何を選び取ったか」と「その理由と軌跡」だ、という考えに基づく。
-各記事は **サマリー（自分用の索引）** と **軌跡（他者向けの生に近い対話ログ）** のセット。
 記事には日付を刻み、「その時点の私」のスナップショットとして残す。
 
 差し出して回るものではない。興味を持って訪ねてきた人が読んで、
 「ああこういうことを普段考えているんだな」と受け取ってくれれば、それでいい。そのために開いてある。
 
+## 記事は3層構造
+
+| 層 | front matter / 本文 | 問い | 主な読者 |
+|---|---|---|---|
+| **サマリー** | `summary` | **何の話だったか**（索引） | 主に自分 |
+| **要点** | `notes`（任意） | **何が分かったか**（内容の結晶） | 読者と自分 |
+| **軌跡** | 本文 | **どう考えたか**（生の対話ログ） | 主に他者 |
+
+「要点」は当初なかった層で、長い対話を記事化してみて「内容そのものを持ち帰る場所がない」と気づいて追加した。
+
 ## 構成
 
 - **Astro**（静的サイト生成） + **Cloudflare Pages**（配信） + **GitHub**（真実のソース）
 - 真実はこのリポの `src/content/posts/*.md`。Astro もホストも「表示係」で、丸ごと移設可能（データ主権）。
-- 完全公開（認証なし）。ゆえに記事化時の**個人情報の剪定は必須**。
+- 数式は **KaTeX** で描画（remark-math + rehype-katex、CDN依存なし）。
+- 完全公開ゆえ、記事化時の**個人情報の剪定は必須**。
 
 ```
-[対話] --/記事化(Skill)--> src/content/posts/*.md --git push--> [Cloudflare Pages が Astro をビルド] --> 公開
+[対話] --/記事化(Skill kijika)--> src/content/posts/*.md --git push--> [Cloudflare Pages が Astro をビルド] --> 公開
 ```
 
-## 日々の運用（あなたの操作はこれだけ）
+## 日々の運用（操作はこれだけ）
 
-### 新しい対話を記事にする
-1. Claude Code で、記事にしたい対話中に **「記事化して」** と言う（Skill `kijika` が起動）
-2. Skill が front matter＋サマリー＋軌跡を生成し、個人情報を剪定して `src/content/posts/` に保存
-3. 剪定内容の報告を確認して `git push` → 数分で公開
+1. 記事にしたい対話中に **「記事化して」** と言う（Skill `kijika` が起動）
+2. Skill が3層（サマリー／要点／軌跡）を生成し、個人情報を剪定して `src/content/posts/` に保存
+3. **ローカルで確認**（下記）
+4. 剪定内容の報告を確認して `git push` → 数分で公開
 
-### 過去の対話をまとめて記事にする（一度きりの棚卸し）
-1. claude.ai → Settings → Privacy → **Export data** をリクエスト（全会話が届く）
-2. 届いた zip を解凍し `conversations.json` をこのリポ直下に置く
-3. `node scripts/split-export.mjs` → `export/` に1会話1ファイルで展開（`export/` は gitignore 済み）
-4. 記事にしたい会話を選び、Claude に渡して記事化（新規と同じ Skill ルール）
+### ⚠ 確認は必ずローカルで
 
-## ローカルで確認
+```bash
+npm run dev      # http://localhost:4321 で確認する
+```
+
+**push して本番で確認してはいけない。** このサイトは CSS が HTML にインライン化されるため、
+ファイル名ハッシュによるキャッシュ破棄が効かず、**エッジキャッシュが古い見た目を返し続ける**
+（実際に2回ハマった）。ローカルならキャッシュ層がなく、見たままが真実。
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321
 npm run build    # dist/ に静的出力
 ```
 
-## Cloudflare Pages 設定（初回のみ）
+## 過去ログの棚卸し（完了済み）
 
-- Framework preset: **Astro**
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Production branch: `main`
-- 公開URLが決まったら `astro.config.mjs` の `site` を実URLに更新する。
+claude.ai の全171件を確認し、**18記事を公開**した。手順は以下（再実行するなら同じ流れ）。
+
+1. claude.ai → Settings → Privacy → **Export data** をリクエスト（全会話がメールで届く）
+2. 届いた zip を解凍し `conversations.json` を `previous_chat/` に置く（gitignore 済み）
+3. **本文は必ず `content` フィールドから取る。`text` には Claude の英語内部思考が混ざっている**
+4. 記事にしたい会話を選び、kijika ルールで記事化
+
+**Claude Code のローカル履歴は、過去分が既に失われている**（`cleanupPeriodDays` の既定30日で自動削除）。
+対策として `~/.claude/settings.json` に `"cleanupPeriodDays": 3650` を設定済み。**この設定を消さないこと。**
 
 ## 剪定の原則
 
-完全公開のため、実名・住所・連絡先・ローカルパス・認証情報・未公開の逡巡は必ず除去する。
+完全公開のため、実名・住所・連絡先・ローカルパス・認証情報は必ず除去する。
 一方で、思考の生々しさ・迷い・反論は削らない（丸めると情報量が下がる）。
-詳細は `.claude/skills/kijika/SKILL.md`。
+
+**仕事の話は「削除」ではなく「当事者性の除去＝一般論化」で扱う。**
+線引きは「一般にそう言えること」と「私が担当しているシステムの話」の境界。
+DMZ/Trust のような教科書的概念は残してよい。危ないのは自社固有の構成と、現状の弱点の開示。
+
+詳細は `.claude/skills/kijika/SKILL.md`（記事化ルールの正本）。
+
+## タイトルの原則
+
+> **「読んで初めてタイトルの意味が分かる」のではなく、
+> 「タイトルを読んで本文の主題がなんとなくわかる」ようであること**
+
+対話の中で生まれた内輪の言葉（造語・比喩）を、文脈なしにタイトルへ持ち込まない。
+
+## Cloudflare Pages 設定（初回のみ・設定済み）
+
+- Framework preset: **Astro** / Build command: `npm run build` / Output: `dist` / Branch: `main`
+- 新規作成の導線が Workers 優先になっているので注意（詳細は CLAUDE.md）

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { marked } from 'marked';
 import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
@@ -19,6 +20,9 @@ export async function getStaticPaths() {
 const { tag, posts } = Astro.props;
 const fmt = (d: Date) =>
   new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+
+// 索引の抜粋は <p> の中に置くので、段落を作らない parseInline で強調だけを効かせる。
+const excerpt = (summary: string) => marked.parseInline(summary.replace(/\n/g, ' '));
 ---
 
 <Base title={`#${tag}`}>
@@ -28,7 +32,7 @@ const fmt = (d: Date) =>
       <li class="post-item">
         <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
         <h2><a href={`/posts/${post.slug}/`}>{post.data.title}</a></h2>
-        <p>{post.data.summary}</p>
+        <p set:html={excerpt(post.data.summary)} />
       </li>
     ))}
   </ul>

@@ -11,7 +11,8 @@ export async function GET(context) {
     items: posts.map((post) => ({
       title: post.data.title,
       pubDate: post.data.date,
-      description: post.data.summary,
+      // RSS は平文なので、要約中の強調記号は落とす。
+      description: post.data.summary.replace(/\*\*/g, ''),
       link: `/posts/${post.slug}/`,
     })),
   });

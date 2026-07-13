@@ -14,11 +14,26 @@ const { Content } = await post.render();
 // 要点は markdown で書けるようにする（箇条書き・強調が要るため）
 const notesHtml = post.data.notes ? marked.parse(post.data.notes) : null;
 
+// 要約も markdown で描画する。強調が要るのは要点と同じで、
+// 生テキストで出すとサマリー内の ** がそのまま読者に見えてしまうため。
+// front matter の `>-`（折り畳みスカラ）は段落の切れ目を単一の \n に畳むので、
+// \n\n に開き直してから marked に渡し、段落として解釈させる。
+const summaryHtml = marked.parse(
+  post.data.summary
+    .split('\n')
+    .map((para) => para.trim())
+    .filter(Boolean)
+    .join('\n\n')
+);
+
+// meta と RSS には HTML を入れられないので、強調記号を落とした平文を使う。
+const summaryText = post.data.summary.replace(/\*\*/g, '');
+
 const fmt = (d: Date) =>
   new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
 ---
 
-<Base title={post.data.title} description={post.data.summary}>
+<Base title={post.data.title} description={summaryText}>
   <article>
     <div class="post-header">
       <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)} 時点</time>
@@ -31,16 +46,10 @@ const fmt = (d: Date) =>
     </div>
 
     {/* サマリー＝結論。これ単体で読めて、同時に下の軌跡への目次になる。
-        長い対話ほど要約も長くなるので段落に分けて描画する。
-        front matter の `>-`（折り畳みスカラ）は、YAML上の空行を単一の \n に畳むので、
-        \n\n ではなく \n で分割する。 */}
+        長い対話ほど要約も長くなるので段落に分けて描画する。 */}
     <section class="summary">
       <p class="summary-label">要約</p>
-      {post.data.summary
-        .split('\n')
-        .map((para) => para.trim())
-        .filter(Boolean)
-        .map((para) => <p>{para}</p>)}
+      <div class="summary-body" set:html={summaryHtml} />
     </section>
 
     {/* 要点＝内容の結晶。サマリー(索引)と軌跡(過程)の中間。

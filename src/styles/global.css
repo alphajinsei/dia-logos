@@ -112,6 +112,7 @@ a { color: var(--accent); }
 /* 長い対話の要約は複数段落になる。段落間に余白を入れて読めるようにする。 */
 .summary p { margin: 0 0 0.9em; }
 .summary p:last-child { margin-bottom: 0; }
+.summary-body :where(strong) { color: var(--accent); }
 
 /* 要点＝内容の結晶。サマリー(索引)と軌跡(過程)の中間の層。
    重さもその中間：サマリーより軽く、本文より存在感を持たせる。枠線で囲って別物と分かるようにする。 */

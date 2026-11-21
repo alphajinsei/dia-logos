@@ -94,41 +94,7 @@ a { color: var(--accent); }
 .post-header time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .post-header h1 { margin: 6px 0 0; font-size: 28px; line-height: 1.4; }
 
-/* サマリー＝結論の要約。本文（軌跡）への入口として上部に据える。 */
-.summary {
-  background: var(--summary-bg);
-  border-left: 3px solid var(--accent);
-  border-radius: 6px;
-  padding: 16px 20px;
-  margin: 24px 0 8px;
-}
-.summary .summary-label {
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  font-weight: 700;
-  margin: 0 0 6px;
-}
-/* 長い対話の要約は複数段落になる。段落間に余白を入れて読めるようにする。 */
-.summary p { margin: 0 0 0.9em; }
-.summary p:last-child { margin-bottom: 0; }
-.summary-body :where(strong) { color: var(--accent); }
-
-/* 要点＝内容の結晶。サマリー(索引)と軌跡(過程)の中間の層。
-   重さもその中間：サマリーより軽く、本文より存在感を持たせる。枠線で囲って別物と分かるようにする。 */
-.notes {
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 16px 20px;
-  margin: 32px 0 8px;
-}
-.notes-label {
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  font-weight: 700;
-  margin: 0 0 10px;
-}
+/* 要点の中身（記事冒頭の「要点を開く」の中で描画される） */
 .notes-body :where(p) { margin: 0 0 0.8em; }
 .notes-body :where(p):last-child { margin-bottom: 0; }
 .notes-body :where(ul, ol) { margin: 0 0 0.8em; padding-left: 1.3em; }
@@ -158,16 +124,6 @@ a { color: var(--accent); }
 .notes-body :where(th) { background: var(--summary-bg); }
 .notes-body > :first-child { margin-top: 0; }
 .notes-body > :last-child { margin-bottom: 0; }
-
-.trajectory-label {
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  font-weight: 700;
-  margin: 40px 0 4px;
-  border-top: 1px solid var(--line);
-  padding-top: 24px;
-}
 
 /* 対話の発言ブロック（Markdown内の見出しベースで装飾する場合の受け皿） */
 .post-body :where(h2) {
@@ -208,3 +164,78 @@ a { color: var(--accent); }
 .post-body :where(th, td) { border: 1px solid var(--line); padding: 6px 10px; text-align: left; }
 
 .back-link { display: inline-block; margin-top: 40px; font-size: 14px; }
+
+/* ---- 会話レイアウト（本文が <div class="turn user|claude"> で書かれた記事） ----
+   claude.ai や CLI と同じく、名札は付けない。発言者は「位置と面」で見分ける。
+   私＝右寄せの薄い茶の吹き出し、Claude＝ページの地にそのまま置いた文章。
+   Claude の応答はページの大部分を占めるので、白い面に閉じ込めず地の文として読ませる。 */
+.post-body.essay { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--line); }
+.post-body.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.turn { min-width: 0; }
+.turn > :first-child { margin-top: 0; }
+.turn > :last-child { margin-bottom: 0; }
+
+.turn.user {
+  align-self: flex-end;
+  max-width: 85%;
+  background: #efe6d8;
+  border-radius: 16px 16px 4px 16px;
+  padding: 14px 18px;
+}
+.turn.user :where(p) { margin: 0.6em 0; }
+
+.turn.claude { align-self: stretch; }
+.turn.claude :where(h2, h3, h4) { font-size: 16px; margin: 1.4em 0 0.4em; color: var(--fg); }
+
+/* 会話の中の引用は「相手の発言の引き写し」。私の吹き出しと紛れないよう、細い線だけにする。 */
+.post-body.chat .turn :where(blockquote) {
+  background: none;
+  border-left: 3px solid var(--line);
+  border-radius: 0;
+  margin: 0.8em 0;
+  padding: 0 0 0 14px;
+  color: var(--muted);
+}
+.post-body.chat > :where(p) { color: var(--muted); font-size: 15px; margin: 0; }
+
+/* 要約・要点は「記事について」の枠にまとめる。
+   会話（右の吹き出し・地の文）のどちらとも違う形にする：全幅の細い枠＋左の太線＋ラベル、文字は一段小さく。
+   背景は付けない（茶の面は私の吹き出しの印なので、ここで使うと紛れる）。 */
+.abstract {
+  margin: 24px 0 0;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 14px 20px 16px;
+}
+.abstract-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+.lead { font-size: 15px; line-height: 1.75; color: #3d3833; }
+.lead :where(strong) { color: var(--accent); }
+.lead :where(p) { margin: 0 0 0.6em; }
+.lead :where(p):last-child { margin-bottom: 0; }
+.digest { margin: 14px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); }
+.digest > summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.digest-inner { padding: 12px 0 0; font-size: 15px; }
+
+@media (max-width: 560px) {
+  .turn.user { max-width: 92%; }
+}

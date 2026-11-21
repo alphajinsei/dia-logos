@@ -29,6 +29,10 @@ const summaryHtml = marked.parse(
 // meta と RSS には HTML を入れられないので、強調記号を落とした平文を使う。
 const summaryText = post.data.summary.replace(/\*\*/g, '');
 
+// 本文が発言ごとの枠（<div class="turn user|claude">）で書かれた記事は、会話の見た目で出す。
+// エッセイ形式の記事（対話ログではないもの）は枠がないので、普通の本文として出す。
+const isChat = post.body.includes('<div class="turn ');
+
 const fmt = (d: Date) =>
   new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
 ---
@@ -45,24 +49,24 @@ const fmt = (d: Date) =>
       )}
     </div>
 
-    {/* サマリー＝結論。これ単体で読めて、同時に下の軌跡への目次になる。
-        長い対話ほど要約も長くなるので段落に分けて描画する。 */}
-    <section class="summary">
-      <p class="summary-label">要約</p>
-      <div class="summary-body" set:html={summaryHtml} />
+    {/* 要約＝何の話だったか。一覧・RSS・検索結果の説明文と同じ文。畳まずに冒頭に出す。
+        長い対話ほど要約も長くなるので、段落に分けて描画する。 */}
+    {/* 要約と要点は「記事について」の枠にまとめる。地の文で書くと、後に続く Claude の応答と見分けがつかないため。 */}
+    <section class="abstract">
+      <p class="abstract-label">要約</p>
+      <div class="lead" set:html={summaryHtml} />
+
+      {/* 要点＝何が分かったか。読み返す本人向けなので、畳んでおいて必要なときに開く。 */}
+      {notesHtml && (
+        <details class="digest">
+          <summary>要点を開く</summary>
+          <div class="digest-inner notes-body" set:html={notesHtml} />
+        </details>
+      )}
     </section>
 
-    {/* 要点＝内容の結晶。サマリー(索引)と軌跡(過程)の中間。
-        「何が分かったか」を構造として持ち帰れるようにする層。 */}
-    {notesHtml && (
-      <section class="notes">
-        <p class="notes-label">要点</p>
-        <div class="notes-body" set:html={notesHtml} />
-      </section>
-    )}
-
-    <p class="trajectory-label">軌跡（対話そのまま）</p>
-    <div class="post-body">
+    {/* 対話の記事は本文が発言ごとの枠（turn）で書かれていて、会話の見た目で出す。 */}
+    <div class={isChat ? 'post-body chat' : 'post-body essay'}>
       <Content />
     </div>
 

@@ -190,6 +190,8 @@ a { color: var(--accent); }
   padding: 14px 18px;
 }
 .turn.user :where(p) { margin: 0.6em 0; }
+/* 元ログの改行（markdown では単独改行は消える）をそのまま見せる。claude.ai の表示と同じ */
+.turn :where(p) { white-space: pre-line; }
 
 .turn.claude { align-self: stretch; }
 .turn.claude :where(h2, h3, h4) { font-size: 16px; margin: 1.4em 0 0.4em; color: var(--fg); }
